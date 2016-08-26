@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.tianyalan.core.domain.model.project.Plan">
+	<resultMap id="planMap" type="Plan">
+		<result property="planId.id" column="plan_id" jdbcType="VARCHAR" />
+		<result property="projectId.id" column="project_id" jdbcType="VARCHAR" />
+		<result property="scheduledDate" column="scheduled_date" jdbcType="DATE"/>
+	</resultMap>
+	
+	<insert id="savePlan" parameterType="Plan">
+		INSERT INTO core_plan
+		(
+			plan_id,
+			project_id,
+			scheduled_date
+		)
+		VALUES
+		(
+			#{planId.id},
+			#{projectId.id},
+			#{scheduledDate}
+		)
+	</insert>
+	
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.tianyalan.core.domain.model.project.Project">
+	<resultMap id="projectMap" type="Project">
+		<result property="projectId.id" column="project_id" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR"/>
+		<result property="description" column="description" jdbcType="VARCHAR"/>
+		<result property="projectPriority.benefit" column="benefit" jdbcType="INTEGER" />	
+		<result property="projectPriority.cost" column="cost" jdbcType="INTEGER" />	
+		<result property="projectPriority.risk" column="risk" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<select id="allProjects" resultMap="projectMap">
+		SELECT * FROM core_project
+	</select>
+	
+	<insert id="saveProject" parameterType="Project">
+		INSERT INTO core_project
+		(
+			project_id,
+			name,
+			description,
+			benefit,
+			cost,
+			risk
+		)
+		VALUES
+		(
+			#{projectId.id},
+			#{name},
+			#{description},
+			#{projectPriority.benefit},
+			#{projectPriority.cost},
+			#{projectPriority.risk}
+		)
+	</insert>
+	
+	<select id="projectOfId" parameterType="ProjectId" resultMap="projectMap">
+		SELECT * FROM core_project WHERE project_id = #{id} 
+	</select>
+	
+	<delete id="removeProject" parameterType="ProjectId">
+		DELETE FROM core_project WHERE project_id = #{id} 
+	</delete>
+	
+	
+</mapper>

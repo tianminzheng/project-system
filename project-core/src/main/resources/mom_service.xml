@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+	<!-- 连接本地rabbitmq -->
+	<rabbit:connection-factory id="connectionFactory"
+		host="localhost" port="5672" />
+
+	<rabbit:admin connection-factory="connectionFactory" id="amqpAdmin" />
+
+	<!-- queue 队列声明 -->
+	<rabbit:queue id="project_created_queue" durable="true"
+		auto-delete="false" exclusive="false" name="project_created_queue" />
+	<rabbit:queue id="discussion_finished_queue" durable="true"
+		auto-delete="false" exclusive="false" name="discussion_finished_queue" />
+
+	<!-- exchange queue binging key 绑定 -->
+	<rabbit:direct-exchange name="mq-exchange"
+		durable="true" auto-delete="false" id="mq-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="project_created_queue" key="project_created_queue" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+	
+	<!-- spring template声明 -->
+	<rabbit:template exchange="mq-exchange" id="amqpTemplate"
+		connection-factory="connectionFactory" />
+
+	<rabbit:listener-container
+		connection-factory="connectionFactory" acknowledge="auto">
+		<rabbit:listener queues="discussion_finished_queue" ref="rabbitMQDiscussionFinishedListener" />
+	</rabbit:listener-container>
+</beans>
