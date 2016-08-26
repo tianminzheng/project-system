@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="cacheEnabled" value="false" />
+		<setting name="localCacheScope" value="STATEMENT" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias type="com.tianyalan.usercenter.domain.model.user.User" alias="User" />
+		<typeAlias type="com.tianyalan.usercenter.domain.model.user.Person" alias="Person" />
+	</typeAliases>
+
+	<plugins>
+		<plugin interceptor="com.tianyalan.common.persistence.SelectCountSqlInterceptor" />
+		<plugin interceptor="com.tianyalan.common.persistence.OffsetLimitInterceptor">
+			<property name="dialectClass"
+				value="com.tianyalan.common.persistence.MySQLDialect" />
+		</plugin>
+	</plugins>
+
+	<mappers>
+		<mapper resource="mapper/user_mapper.xml" />
+		<mapper resource="mapper/person_mapper.xml" />
+	</mappers>
+</configuration>

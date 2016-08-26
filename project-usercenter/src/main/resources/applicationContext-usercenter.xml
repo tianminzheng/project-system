@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-4.0.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+    <context:annotation-config />  
+    
+    <context:component-scan base-package="com.tianyalan.usercenter" >        
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+    
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:project_usercenter.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<!-- 基本属性 url、user、password -->
+		<property name="driverClassName" value="${jdbc-0.druid.driver-class}" />
+		<property name="url"             value="${jdbc-0.druid.driver-url}" />
+		<property name="username"        value="${jdbc-0.user}" />
+		<property name="password"        value="${jdbc-0.password}" />
+		
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="${jdbc-0.druid.connection-initial-size}" />
+		<property name="minIdle"     value="${jdbc-0.druid.connection-minimum-size}" />
+		<property name="maxActive"   value="${jdbc-0.druid.connection-maximum-size}" />
+		
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait"     value="${jdbc-0.druid.connection-maxwait-time}" />
+		
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="${jdbc-0.druid.connection-maxactive-time}" />
+		
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis"    value="${jdbc-0.druid.connection-minlive-time}" />
+		
+	 	<property name="validationQuery" value="${jdbc-0.druid.connection-test-sql}" />
+		<property name="testWhileIdle"   value="${jdbc-0.druid.test-while-idle}" />
+		<property name="testOnBorrow"    value="${jdbc-0.druid.test-on-borrow}" />
+		<property name="testOnReturn"    value="${jdbc-0.druid.test-on-return}" />
+		
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<property name="poolPreparedStatements" value="${jdbc-0.druid.pool-prepared-statements}" />
+		<!-- property name="maxPoolPreparedStatementPerConnectionSize" value="20" /-->
+		
+		<!-- 数据库密码是否加密 -->
+		<property name="connectionProperties" value="config.decrypt=${jdbc-0.druid.config.decrypt}" />
+		   <!-- 配置监控统计拦截的filters -->
+		<property name="filters" value="stat,config"/>
+	</bean>
+  
+  	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+   	 	<property name="dataSource" ref="dataSource" />
+    	<property name="configLocation" value="classpath:sql_map_config.xml" />
+	</bean>
+	
+	<bean id="myBatisDAO" class="com.tianyalan.common.persistence.MyBatisDAO">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="domainRegistry" class="com.tianyalan.usercenter.domain.model.DomainRegistry" />
+</beans>

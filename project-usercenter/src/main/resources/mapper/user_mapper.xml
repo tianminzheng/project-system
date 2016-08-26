@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.tianyalan.usercenter.domain.model.user">
+	<resultMap id="userMap" type="User">
+		<id property="id" column="ID" />
+		<result property="enablement.enabled" column="enablement_enabled" jdbcType="INTEGER" />
+		<result property="enablement.endDate" column="enablement_end_date" jdbcType="TIMESTAMP"/>
+		<result property="enablement.startDate" column="enablement_start_date" jdbcType="TIMESTAMP"/>
+		<result property="password" column="password" jdbcType="VARCHAR" />	
+		<result property="username" column="username" jdbcType="VARCHAR" />	
+	</resultMap>
+	
+	<insert id="saveUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO usercenter_user
+		(
+			enablement_enabled,
+			enablement_end_date,
+			enablement_start_date,
+			password,
+			username
+		)
+		VALUES
+		(
+			#{enablement.enabled},
+			#{enablement.endDate},
+			#{enablement.startDate},
+			#{password},
+			#{username}
+		)
+	</insert>
+	
+	<delete id="removeUser" parameterType="Long">
+		DELETE FROM usercenter_user where id = #{id}
+	</delete>
+	
+	<select id="userFromAuthenticCredentials" parameterType="Map" resultMap="userMap">
+		SELECT * from usercenter_user where username = #{username} and password = #{password}
+	</select>
+	
+	<select id="userWithUsername" parameterType="String" resultMap="userMap">
+		SELECT * from usercenter_user where username = #{username}
+	</select>
+	
+	<select id="userWithId" parameterType="Long" resultMap="userMap">
+		SELECT * from usercenter_user where id = #{id}
+	</select>
+	
+	<update id="updateUser" parameterType="User">
+		update usercenter_user set password = #{password} where username = #{username}
+	</update>
+</mapper>

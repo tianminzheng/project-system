@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.tianyalan.discusssion.domain.model.discussion.Discussion">
+	<resultMap id="discussionMap" type="Discussion">
+		<result property="discussionId.id" column="discussion_id" jdbcType="VARCHAR" />
+		<result property="projectId" column="project_id" jdbcType="VARCHAR" />
+		<result property="owner.emailAddress" column="owner_email_address" jdbcType="VARCHAR"/>
+		<result property="owner.identity" column="owner_identity" jdbcType="VARCHAR"/>
+		<result property="owner.name" column="owner_name" jdbcType="VARCHAR" />	
+		<result property="closed" column="closed" jdbcType="INTEGER" />	
+		<result property="subject" column="subject" jdbcType="VARCHAR" />
+		<result property="scheduledDate" column="scheduled_date" jdbcType="TIMESTAMP" />
+	</resultMap>
+		
+	<insert id="saveDiscussion" parameterType="Discussion">
+		INSERT INTO discussion_discussion
+		(
+			discussion_id,
+			project_id,
+			owner_email_address,
+			owner_identity,
+			owner_name,
+			closed,
+			subject,
+			scheduled_date
+		)
+		VALUES
+		(
+			#{discussionId.id},
+			#{projectId},
+			#{owner.emailAddress},
+			#{owner.identity},
+			#{owner.name},
+			#{closed},
+			#{subject},
+			#{scheduledDate}
+		)
+	</insert>
+	
+	<select id="discussionOfId" parameterType="DiscussionId" resultMap="discussionMap">
+		SELECT * FROM discussion_discussion WHERE discussion_id = #{id} 
+	</select>
+	
+	<update id="updateDiscussion" parameterType="Discussion">
+		update discussion_discussion set closed = #{closed}, scheduled_date = #{scheduledDate} where discussion_id = #{discussionId.id} 
+	</update>
+	
+	
+</mapper>

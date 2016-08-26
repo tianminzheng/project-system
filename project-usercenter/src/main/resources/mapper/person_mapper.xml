@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.tianyalan.usercenter.domain.model.user">
+	<resultMap id="personMap" type="Person">
+		<id property="id" column="ID" />
+		<result property="contactInformation.emailAddress.address" column="contact_information_email_address_address" jdbcType="VARCHAR" />
+		<result property="contactInformation.postalAddress.city" column="contact_information_postal_address_city" jdbcType="VARCHAR"/>
+		<result property="contactInformation.postalAddress.countryCode" column="contact_information_postal_address_country_code" jdbcType="VARCHAR"/>
+		<result property="contactInformation.postalAddress.postalCode" column="contact_information_postal_address_postal_code" jdbcType="VARCHAR" />	
+		<result property="contactInformation.postalAddress.stateProvince" column="contact_information_postal_address_state_province" jdbcType="VARCHAR" />		
+		<result property="contactInformation.postalAddress.streetAddress" column="contact_information_postal_address_street_address" jdbcType="VARCHAR" />	
+		<result property="contactInformation.primaryTelephone.number" column="contact_information_primary_telephone_number" jdbcType="VARCHAR" />	
+		<result property="contactInformation.secondaryTelephone.number" column="contact_information_secondary_telephone_number" jdbcType="VARCHAR" />	
+		<result property="name.firstName" column="name_first_name" jdbcType="VARCHAR" />	
+		<result property="name.lastName" column="name_last_name" jdbcType="VARCHAR" />	
+	</resultMap>
+	
+	<insert id="savePerson" parameterType="Person">
+		INSERT INTO usercenter_person
+		(
+			id,
+			contact_information_email_address_address,
+			contact_information_postal_address_city,
+			contact_information_postal_address_country_code,
+			contact_information_postal_address_postal_code,
+			contact_information_postal_address_state_province,
+			contact_information_postal_address_street_address,
+			contact_information_primary_telephone_number,
+			contact_information_secondary_telephone_number,
+			name_first_name,
+			name_last_name
+		)
+		VALUES
+		(
+			#{user.id},
+			#{contactInformation.emailAddress.address},
+			#{contactInformation.postalAddress.city},
+			#{contactInformation.postalAddress.countryCode},
+			#{contactInformation.postalAddress.postalCode},
+			#{contactInformation.postalAddress.stateProvince},
+			#{contactInformation.postalAddress.streetAddress},
+			#{contactInformation.primaryTelephone.number},
+			#{contactInformation.secondaryTelephone.number},
+			#{name.firstName},
+			#{name.lastName}
+		)
+	</insert>
+	
+	<delete id="removePerson" parameterType="Long">
+		DELETE FROM usercenter_person where id = #{id}
+	</delete>
+	
+	<select id="allSimilarlyNamedUsers" parameterType="Map" resultMap="personMap">
+		SELECT * from usercenter_person where name_first_name like #{firstNamePrefix} or name_last_name like #{lastNamePrefix}
+	</select>
+	
+	<select id="personWithUserId" parameterType="Long" resultMap="personMap">
+		SELECT * from usercenter_person where id = #{id}
+	</select>
+</mapper>
